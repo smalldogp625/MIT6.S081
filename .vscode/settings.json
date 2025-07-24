@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "user.h": "c",
+        "memory_resource": "c",
+        "format": "c",
+        "ostream": "c",
+        "stop_token": "c",
+        "streambuf": "c"
+    }
+}
