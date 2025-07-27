@@ -5,6 +5,10 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
+extern uint64 kfreemem(void);
+extern uint64
+count_active_proc(void);
 
 uint64
 sys_exit(void)
@@ -103,6 +107,16 @@ sys_trace(void){
 }
 uint64
 sys_sysinfo(void){
+  struct sysinfo info;
+  struct proc*p = myproc();//获取当前进程
+  uint64 addr;//虚拟内存；
+  if(argaddr(0,&addr)<0)
+    return -1;
+  info.freemem = kfreemem();
+  info.nproc = count_active_proc();
+  // copy to user space // 把这个struct复制到用户态地址里去
+  if(copyout(p->pagetable, addr, (char*)&info, sizeof(info))<0)
+    return -1;
   printf("hello sysinfo!\n");
   return 0;
 }
