@@ -22,7 +22,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int trace(int);
+int trace(int);// 新系统调用trace的函数原型签名
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

@@ -94,6 +94,10 @@ sys_uptime(void)
 uint64
 sys_trace(void){
   //获取系统调用的参数
-  argint(0,&(myproc()->trace_mask) );
+  int trace_sys_mask;
+
+  argint(0,&trace_sys_mask );
+  myproc()->trace_mask |= trace_sys_mask;
+
   return 0;
 }
