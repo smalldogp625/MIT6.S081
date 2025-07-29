@@ -437,3 +437,45 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+// \brief 辅助递归
+
+
+/*
+page table 0x0000000087f6e000
+ ..0: pte 0x0000000021fda801 pa 0x0000000087f6a000
+ .. ..0: pte 0x0000000021fda401 pa 0x0000000087f69000
+ .. .. ..0: pte 0x0000000021fdac1f pa 0x0000000087f6b000
+ .. .. ..1: pte 0x0000000021fda00f pa 0x0000000087f68000
+ .. .. ..2: pte 0x0000000021fd9c1f pa 0x0000000087f67000
+ ..255: pte 0x0000000021fdb401 pa 0x0000000087f6d000
+ .. ..511: pte 0x0000000021fdb001 pa 0x0000000087f6c000
+ .. .. ..509: pte 0x0000000021fdd813 pa 0x0000000087f76000
+ .. .. ..510: pte 0x0000000021fddc07 pa 0x0000000087f77000
+ .. .. ..511: pte 0x0000000020001c0b pa 0x0000000080007000
+*/
+void vmprint_helper(pagetable_t pagetable, int depth){
+   // there are 2^9 = 512 PTEs in a page table.
+   static char* index[] = {
+  "..",
+  ".. ..",
+  ".. .. .."
+};
+  if(depth>2)
+    return ;
+  for(int i = 0; i < 512; i++){
+    pte_t pte = pagetable[i];
+    if(pte&PTE_V){
+      printf("%s%d: pte %p pa %p\n",index[depth], i, pte, PTE2PA(pte));
+      if((pte & (PTE_R | PTE_W | PTE_X)) == 0){
+        uint64 child = PTE2PA(pte);
+        vmprint_helper((pagetable_t)child,depth+1);
+
+      }
+    }
+  }
+  
+}
+void vmprint(pagetable_t pagetable){
+  printf("page table %p\n",pagetable);
+  vmprint_helper(pagetable, 0);
+}
