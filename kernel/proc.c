@@ -702,7 +702,10 @@ sys_sigalarm(void){
 
 uint64
 sys_sigreturn(void){
+  struct proc *p = myproc();
+  // 恢复原 trapframe 等...
 
+  p->handling_alarm = 0; // ⭐ 表示 handler 执行完了，可以再次进入
   return 0;
 
 }

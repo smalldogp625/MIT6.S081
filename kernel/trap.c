@@ -80,10 +80,11 @@ usertrap(void)
   if(which_dev == 2)
   {
     p->ticks_since_last_alarm+=1;
-    if(p->alarm_period!=0&&p->ticks_since_last_alarm==p->alarm_period){
+    if(p->alarm_period!=0&&p->ticks_since_last_alarm==p->alarm_period&&p->handling_alarm==0){
       // 设立返回到用户态后到跳转指令地址
       // jump to the alarm handler when returning back to user space
       p->ticks_since_last_alarm =0;
+      p->handling_alarm = 1;
       p->trapframe->epc = (uint64)p->alarm_handler;
     }
     yield();

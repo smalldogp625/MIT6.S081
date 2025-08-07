@@ -106,7 +106,7 @@ struct proc {
   char name[16];               // Process name (debugging)
   /*mycode*/
   int alarm_period;
-void (*alarm_handler)(void);
-
+  void (*alarm_handler)(void);
   int ticks_since_last_alarm;
+  int handling_alarm; // 0 表示未在 handler 中，1 表示已进入
 };
