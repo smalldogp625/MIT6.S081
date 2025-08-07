@@ -145,7 +145,10 @@ found:
   memset(&p->context, 0, sizeof(p->context));
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
-
+  // Zero initializes the alarm releated fields
+  p->alarm_period = 0;
+  p->alarm_handler = 0;
+  p->ticks_since_last_alarm = 0;
   return p;
 }
 
@@ -680,4 +683,26 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+uint64 
+sys_sigalarm(void){
+  
+  printf("hello world\n");
+  struct proc *my_proc = myproc();
+  int period;
+  argint(0,&period);
+  uint64 p;
+  argaddr(1,&p);
+  my_proc->alarm_period = period;
+  my_proc->alarm_handler = (void (*)()) p;
+  my_proc->ticks_since_last_alarm = 0;
+
+  return 0;
+}
+
+uint64
+sys_sigreturn(void){
+
+  return 0;
+
 }
