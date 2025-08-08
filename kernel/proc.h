@@ -109,4 +109,6 @@ struct proc {
   void (*alarm_handler)(void);
   int ticks_since_last_alarm;
   int handling_alarm; // 0 表示未在 handler 中，1 表示已进入
+  struct trapframe* alarmframe; //保存中断时的用户寄存器
+
 };
